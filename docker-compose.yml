@@ -1,0 +1,40 @@
+services:
+  backend:
+    build:
+      context: ./FizzBuzzGame-Backend-main
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5001
+      
+    networks:
+      - fizzbuzz-network
+    depends_on:
+      - database
+
+  frontend:
+    build:
+      context: ./FizzBuzzGame-main
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - fizzbuzz-network
+
+  database:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Linhquan123@
+      MYSQL_DATABASE: fizzbuzzgame
+    ports:
+      - "3306:3306"
+    networks:
+      - fizzbuzz-network
+
+networks:
+  fizzbuzz-network:
+    driver: bridge
