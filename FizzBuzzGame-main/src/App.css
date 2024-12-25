@@ -1,0 +1,95 @@
+/* Global styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8e1f4; /* Light pink background */
+  color: #6c3e88; /* Darker pink text */
+  margin: 0;
+  padding: 0;
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Center the main container */
+div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  background-color: #f0d6f7; /* Light pink background */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 100%;
+  max-height: fit-content;
+}
+
+/* Style the header */
+h1 {
+  color: #9b3d88; /* Deep pink header */
+}
+
+/* Buttons styling */
+button {
+  background-color: #ff66b2; /* Vivid pink background */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 12px 20px;
+  font-size: 16px;
+  margin: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+button:hover {
+  background-color: #ff3385; /* Darker pink for hover effect */
+}
+
+/* Create a more vivid and pink color for inputs */
+input[type="text"], input[type="number"] {
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  border: 1px solid #ff66b2;
+  background-color: #fff0f8; /* Very light pink */
+  color: #9b3d88;
+  font-size: 16px;
+}
+
+/* Input focus effect */
+input[type="text"]:focus, input[type="number"]:focus {
+  border-color: #ff3385;
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 51, 133, 0.5);
+}
+
+/* Make the game creation section stand out */
+h2, h3 {
+  color: #9b3d88; /* Deep pink header */
+}
+
+/* Make available games section more vivid */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px;
+  font-size: 18px;
+}
+
+li button {
+  background-color: #ff3385;
+  padding: 5px 10px;
+  margin-left: 10px;
+}
+
+/* Styling for when the game form is collapsed */
+button#toggleForm {
+  margin-top: 20px;
+}
