@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Downloads\\FizzBuzzApp-Full\\FizzBuzzGame-Backend-main\\GameAPI.csproj": {}
+    "C:\\Users\\Admin\\Downloads\\FizzBuzzFull\\FizzBuzzGame-Backend-main\\GameAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Downloads\\FizzBuzzApp-Full\\FizzBuzzGame-Backend-main\\GameAPI.csproj": {
+    "C:\\Users\\Admin\\Downloads\\FizzBuzzFull\\FizzBuzzGame-Backend-main\\GameAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Downloads\\FizzBuzzApp-Full\\FizzBuzzGame-Backend-main\\GameAPI.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Downloads\\FizzBuzzFull\\FizzBuzzGame-Backend-main\\GameAPI.csproj",
         "projectName": "GameAPI",
-        "projectPath": "C:\\Users\\Admin\\Downloads\\FizzBuzzApp-Full\\FizzBuzzGame-Backend-main\\GameAPI.csproj",
+        "projectPath": "C:\\Users\\Admin\\Downloads\\FizzBuzzFull\\FizzBuzzGame-Backend-main\\GameAPI.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Downloads\\FizzBuzzApp-Full\\FizzBuzzGame-Backend-main\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Downloads\\FizzBuzzFull\\FizzBuzzGame-Backend-main\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -43,10 +43,6 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Microsoft.AspNetCore.OpenApi": {
-              "target": "Package",
-              "version": "[8.0.11, )"
-            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.2, )"
@@ -59,7 +55,7 @@
             },
             "Microsoft.EntityFrameworkCore.InMemory": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[8.0.2, )"
             },
             "Moq": {
               "target": "Package",
@@ -72,6 +68,14 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.2, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.4.5, )"
             }
           },
           "imports": [

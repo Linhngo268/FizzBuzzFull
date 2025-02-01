@@ -1,39 +1,59 @@
+ 
+version: '3.9'
+
 services:
   backend:
     build:
       context: ./FizzBuzzGame-Backend-main
       dockerfile: Dockerfile
+    container_name: fizzbuzz-backend
     ports:
-      - "5001:5001"
+      - "5001:5001" # Expose backend API to the host
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5001
-      
-    networks:
-      - fizzbuzz-network
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5001
+      DATABASE_HOST: database # Use Docker service name
+      DATABASE_PORT: 3306 # Internal port within the Docker network
+      DATABASE_USER: root
+      DATABASE_PASSWORD: Linhquan123@
+      DATABASE_NAME: fizzbuzzgame
     depends_on:
       - database
+    networks:
+      - fizzbuzz-network
 
   frontend:
     build:
       context: ./FizzBuzzGame-main
       dockerfile: Dockerfile
+    container_name: fizzbuzz-frontend
     ports:
-      - "3000:80"
+      - "3000:80" # Expose frontend to the host
     depends_on:
       - backend
     networks:
       - fizzbuzz-network
 
   database:
-    image: mysql
+    image: mysql 
+    container_name: fizzbuzz-database
+    ports:
+      - "3307:3306" # Expose frontend to the host
     environment:
       MYSQL_ROOT_PASSWORD: Linhquan123@
       MYSQL_DATABASE: fizzbuzzgame
-    ports:
-      - "3306:3306"
+      MYSQL_USER: root
+       
+      MYSQL_PASSWORD: Linhquan123@
+    volumes:
+      - ./my.cnf:/etc/mysql/conf.d/my.cnf:ro
+      - database_data:/var/lib/mysql # Persistent data storage
     networks:
       - fizzbuzz-network
+
+volumes:
+  database_data:
+    driver: local
 
 networks:
   fizzbuzz-network:

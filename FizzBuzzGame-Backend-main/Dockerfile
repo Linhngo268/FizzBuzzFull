@@ -1,22 +1,41 @@
-# Use .NET SDK to build the project
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+# FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# WORKDIR /app
 
-# Copy the project file and restore dependencies
-COPY *.csproj ./
+# # Copy project files and restore dependencies
+# COPY GameAPI.csproj ./
+# RUN dotnet restore
+
+# # Copy the rest of the files and build the main application
+# COPY . ./
+# RUN dotnet publish GameAPI.csproj -c Release -o /app/publish
+
+# # Use a runtime image for running the application
+# FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# WORKDIR /app
+# COPY --from=build /app/publish .
+# ENTRYPOINT ["dotnet", "GameAPI.dll"]
+# Stage 1: Build the application
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy project file and restore dependencies
+COPY GameAPI.csproj ./
 RUN dotnet restore
 
-# Copy all source files and build the project
+# Copy the remaining source files and build the application
 COPY . ./
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish GameAPI.csproj -c Release -o /app/publish /p:UseAppHost=false
 
-# Use a runtime image to run the application
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Stage 2: Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=build /app/publish .
 
-# Expose the port used by the application
-EXPOSE 5001
+# Copy the published files from the build stage
+COPY --from=build /app/publish ./
 
-# Command to run the application
+# Expose necessary ports (if applicable)
+EXPOSE 80
+EXPOSE 443
+
+# Define the entry point for the application
 ENTRYPOINT ["dotnet", "GameAPI.dll"]
