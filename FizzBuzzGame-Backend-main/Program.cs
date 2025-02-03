@@ -10,6 +10,9 @@ builder.Services.AddCors(options =>
 });
 // Add services to the container.
 builder.Services.AddControllers(); // This line registers the controllers.
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IGameService, GameService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

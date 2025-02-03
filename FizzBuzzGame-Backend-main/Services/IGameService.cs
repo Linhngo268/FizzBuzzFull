@@ -1,0 +1,9 @@
+public interface IGameService
+{
+    Task<IEnumerable<object>> GetAllGamesAsync();
+    Task<Game> GetGameByNameAsync(string gameName);
+    Task<string> PlayGameAsync(string gameName);
+    Task<bool> ValidateAnswerAsync(ValidateAnswerRequest request);
+    Task<string> CreateGameAsync(Game newGame);
+    Task<string> DeleteGameAsync(int id);
+}
