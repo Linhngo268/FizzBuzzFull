@@ -28,29 +28,40 @@ public class GameService : IGameService
         return await _gameRepository.GetGameByNameAsync(gameName);
     }
 
-    public async Task<string> PlayGameAsync(string gameName)
-    {
-        var game = await _gameRepository.GetGameByNameAsync(gameName);
-        if (game == null)
-            return null;
+  public async Task<int> PlayGameAsync(string gameName)
+{
+    var game = await _gameRepository.GetGameByNameAsync(gameName);
+    if (game == null)
+        return -1; // Return -1 to indicate game not found
 
-        var random = new Random();
-        int nextNumber = random.Next(game.MinRange, game.MaxRange + 1);
-        return $"{nextNumber} (Timer: {game.Timer})";
-    }
+    var random = new Random();
+    int nextNumber = random.Next(game.MinRange, game.MaxRange + 1);
 
-    public async Task<bool> ValidateAnswerAsync(ValidateAnswerRequest request)
-    {
-        var game = await _gameRepository.GetGameByNameAsync(request.GameName);
-        if (game == null)
-            return false;
+    return await Task.FromResult(nextNumber);
+}
 
-        string expectedAnswer = string.Join("", game.Rules
-            .Where(r => request.Number % r.Divisor == 0)
-            .Select(r => r.Word));
 
-        return expectedAnswer == request.Answer;
-    }
+
+
+   public async Task<bool> ValidateAnswerAsync(ValidateAnswerRequest request)
+{
+    var game = await _gameRepository.GetGameByNameAsync(request.GameName);
+    if (game == null)
+        return false;
+
+    // Generate expected answer based on divisibility rules
+    string expectedAnswer = string.Join("", game.Rules
+        .Where(r => request.Number % r.Divisor == 0)
+        .Select(r => r.Word));
+
+    // If no rule applies, the answer should be the number itself
+    if (string.IsNullOrEmpty(expectedAnswer))
+        expectedAnswer = request.Number.ToString();
+
+    // Compare case-insensitively
+    return string.Equals(expectedAnswer, request.Answer, StringComparison.OrdinalIgnoreCase);
+}
+
 
     public async Task<string> CreateGameAsync(Game newGame)
     {

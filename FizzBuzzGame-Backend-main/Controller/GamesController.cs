@@ -29,13 +29,15 @@ public class GamesController : ControllerBase
         return Ok(new { message = response });
     }
 
-    [HttpPost("play-game")]
-    public async Task<IActionResult> PlayGame([FromBody] PlayGameRequest request)
-    {
-        string response = await _gameService.PlayGameAsync(request.GameName);
-        if (response == null) return NotFound(new { error = "Game not found." });
-        return Ok(new { message = response });
+   [HttpPost("play-game")]
+public async Task<IActionResult> PlayGame([FromBody] PlayGameRequest request)
+{
+    int response = await _gameService.PlayGameAsync(request.GameName);
+    if (response == -1) return NotFound(new { error = "Game not found." });
+
+    return Ok(new { number = response });  
     }
+
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteGame(int id)
