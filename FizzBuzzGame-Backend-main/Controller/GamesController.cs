@@ -29,14 +29,14 @@ public class GamesController : ControllerBase
         return Ok(new { message = response });
     }
 
-   [HttpPost("play-game")]
+  [HttpPost("play-game")]
 public async Task<IActionResult> PlayGame([FromBody] PlayGameRequest request)
 {
-    int response = await _gameService.PlayGameAsync(request.GameName);
-    if (response == -1) return NotFound(new { error = "Game not found." });
+    var (number, timeLeft) = await _gameService.PlayGameAsync(request.GameName);
+    if (number == -1) return NotFound(new { error = "Game not found." });
 
-    return Ok(new { number = response });  
-    }
+    return Ok(new { number, timeLeft });
+}
 
 
     [HttpDelete("{id}")]

@@ -25,6 +25,14 @@ const App: React.FC = () => {
   useEffect(() => {
     fetchGames();
   }, []);
+  useEffect(() => {
+    if (gameStarted && timeLeft > 0 && !gameEnded) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (timeLeft === 0 && !gameEnded) {
+      endRound();
+    }
+  }, [timeLeft, gameStarted, gameEnded]);
 
   const fetchGames = async () => {
     try {
@@ -41,8 +49,22 @@ const App: React.FC = () => {
   };
 
   const handleNewGameChange = (field: string, value: any) => {
-    setNewGame((prev) => ({ ...prev, [field]: value }));
+    setNewGame((prev: any) => ({ ...prev, [field]: value }));
   };
+  const addRule = () => {
+    setNewGame((prev) => ({
+      ...prev,
+      rules: [...prev.rules, { divisor: 1, word: "" }],
+    }));
+  };
+  const handleRuleChange = (index: number, field: string, value: any) => {
+    setNewGame((prev) => {
+      const rules = [...prev.rules];
+      rules[index] = { ...rules[index], [field]: value };
+      return { ...prev, rules };
+    });
+  };
+
 
   const createGame = async () => {
     const payload = {
@@ -51,7 +73,7 @@ const App: React.FC = () => {
       minRange: newGame.range.min,
       maxRange: newGame.range.max,
       timer: newGame.timer || 60,
-      rules: newGame.rules.map((rule) => ({
+      rules: newGame.rules.map((rule: { divisor: any; word: string; }) => ({
         divisor: Number(rule.divisor),
         word: rule.word.trim(),
       })),
@@ -76,7 +98,72 @@ const App: React.FC = () => {
       alert("Unable to create game. Please check your input and try again.");
     }
   };
+  const startGame = async () => {
+    try {
+      const response = await fetch("http://localhost:5001/api/Games/play-game", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gameName: selectedGame.gameName }),
+      });
 
+      const data = await response.json();
+      setNumbers([{ number: data.number, userAnswer: "" }]);
+      setGameStarted(true);
+      setGameEnded(false);
+      setScore({ correct: 0, incorrect: 0 });
+      setTimeLeft(selectedGame.timer || 60);
+    } catch (error) {
+      console.error("Error starting game:", error);
+      alert("Failed to start the game. Please try again.");
+    }
+  };
+
+  const submitAnswer = async () => {
+    if (!numbers[0]?.userAnswer) return;
+    try {
+      const response = await fetch("http://localhost:5001/api/Games/validate-answer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          gameName: selectedGame.gameName,
+          number: numbers[0].number,
+          answer: numbers[0].userAnswer,
+        }),
+      });
+      const data = await response.json();
+      if (data.correct) {
+        setScore((prev) => ({ ...prev, correct: prev.correct + 1 }));
+        alert("Correct!");
+      } else {
+        setScore((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
+        alert(`Incorrect!`);
+      }
+      fetchNextNumber();
+    } catch (error) {
+      console.error("Error submitting answer:", error);
+      alert("Failed to submit answer. Please try again.");
+    }
+  };
+  const fetchNextNumber = async () => {
+    try {
+      const response = await fetch("http://localhost:5001/api/Games/play-game", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gameName: selectedGame.gameName }),
+      });
+      const data = await response.json();
+      setNumbers([{ number: data.number, userAnswer: "" }]);
+    } catch (error) {
+      console.error("Error fetching next number:", error);
+      alert("Failed to fetch the next number. Please try again.");
+    }
+  };
+  const endRound = () => {
+    setGameEnded(true);
+    setGameStarted(false);
+    setNumbers([]);
+    alert(`Game Over! Correct: ${score.correct}, Incorrect: ${score.incorrect}`);
+  };
   const deleteGame = async (gameId: number | undefined) => {
     try {
       if (!gameId) {
@@ -125,12 +212,27 @@ const App: React.FC = () => {
           <input type="text" placeholder="Author" value={newGame.author} onChange={(e) => handleNewGameChange("author", e.target.value)} />
           
           <h3>Rules</h3>
-          {newGame.rules.map((rule, index) => (
-            <div key={index}>
-              <input type="number" placeholder="Divisor" value={rule.divisor} onChange={(e) => handleNewGameChange("rules", [...newGame.rules])} />
-              <input type="text" placeholder="Word" value={rule.word} onChange={(e) => handleNewGameChange("rules", [...newGame.rules])} />
-            </div>
-          ))}
+            {newGame.rules.map((rule, index) => (
+              <div key={index}>
+                <input
+                  type="number"
+                  placeholder="Divisor"
+                  value={rule.divisor}
+                  onChange={(e) =>
+                    handleRuleChange(index, "divisor", Number(e.target.value))
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Word"
+                  value={rule.word}
+                  onChange={(e) =>
+                    handleRuleChange(index, "word", e.target.value)
+                  }
+                />
+              </div>
+            ))}
+           <button onClick={addRule}>Add Rule</button>
           
           <h3>Number Range</h3>
           <input type="number" placeholder="Min" value={newGame.range.min} onChange={(e) => handleNewGameChange("range", { ...newGame.range, min: Number(e.target.value) })} />
@@ -177,11 +279,43 @@ const App: React.FC = () => {
               </li>
             ))}
           </ul>
+          <button onClick={startGame}>Start Game</button>
           <button onClick={() => setSelectedGame(null)}>Close</button>
         </div>
       )}
-    </div>
-  );
+     
+
+   
+{gameStarted && !gameEnded && (
+  <div>
+    <h2>Playing: {selectedGame.gameName}</h2>
+    <p>Time Left: {timeLeft} seconds</p>
+    <p>
+      Number: {numbers[0]?.number}{" "}
+      <input
+        type="text"
+        placeholder="Your Answer"
+        value={numbers[0]?.userAnswer || ""}
+        onChange={(e) => setNumbers([{ ...numbers[0], userAnswer: e.target.value }])}
+      />
+    </p>
+    <button onClick={submitAnswer}>Submit Answer</button>
+    <button onClick={endRound}>Close</button> {/* Close Button */}
+  </div>
+)}
+
+{gameEnded && (
+  <div>
+    <h2>Game Over!</h2>
+    <p>Correct: {score.correct}</p>
+    <p>Incorrect: {score.incorrect}</p>
+    <button onClick={() => { setGameEnded(false); setSelectedGame(null); setScore({ correct: 0, incorrect: 0 }); setTimeLeft(10); }}>Back to Menu</button> {/* Close Button */}
+  </div>
+)}
+</div>
+);
+
 };
 
 export default App;
+ 

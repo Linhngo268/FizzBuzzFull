@@ -8,6 +8,28 @@ public class GameService : IGameService
     {
         _gameRepository = gameRepository;
     }
+    private readonly Dictionary<string, DateTime> _gameStartTimes = new();
+
+
+    public async Task<(int number, int timeLeft)> PlayGameAsync(string gameName)
+    {
+        var game = await _gameRepository.GetGameByNameAsync(gameName);
+        if (game == null)
+            return (-1, 0); // Return -1 for number and 0 for timeLeft if game is not found.
+
+        var random = new Random();
+        int nextNumber = random.Next(game.MinRange, game.MaxRange + 1);
+
+        // If the game hasn't started, set the start time in the dictionary
+        _gameStartTimes.TryAdd(gameName, DateTime.UtcNow);
+
+        // Get elapsed time since the game started
+        _gameStartTimes.TryGetValue(gameName, out DateTime startTime);
+        int timeElapsed = (int)(DateTime.UtcNow - startTime).TotalSeconds;
+        int timeLeft = Math.Max(0, game.Timer - timeElapsed); // Ensure time does not go negative
+
+        return (nextNumber, timeLeft);
+    }
 
     public async Task<IEnumerable<object>> GetAllGamesAsync()
     {
@@ -28,17 +50,7 @@ public class GameService : IGameService
         return await _gameRepository.GetGameByNameAsync(gameName);
     }
 
-  public async Task<int> PlayGameAsync(string gameName)
-{
-    var game = await _gameRepository.GetGameByNameAsync(gameName);
-    if (game == null)
-        return -1; // Return -1 to indicate game not found
 
-    var random = new Random();
-    int nextNumber = random.Next(game.MinRange, game.MaxRange + 1);
-
-    return await Task.FromResult(nextNumber);
-}
 
 
 
