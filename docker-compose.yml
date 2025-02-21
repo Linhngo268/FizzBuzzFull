@@ -28,7 +28,8 @@ services:
       dockerfile: Dockerfile
     container_name: fizzbuzz-frontend
     ports:
-      - "3000:80" # Expose frontend to the host
+      - "3000:3000" # Expose frontend to the host
+    command: ["npm", "run", "dev"]
     depends_on:
       - backend
     networks:

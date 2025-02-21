@@ -1,0 +1,114 @@
+ 
+ 
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.h1{
+  color: #c2185b;
+  display: flex;
+  align-items: center;
+  justify-content: center;}
+.h2{
+  color: #c2185b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+.title {
+  color: #c2185b;
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.button {
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.button:hover {
+  background-color: #d63384;
+}
+
+.buttonToggle {
+  background-color: #ff1493;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+   
+  
+   
+}
+.buttonToggle:hover {
+  background-color: #d63384;
+}
+
+.createGameSection, .gameList, .selectedGameDetails, .gamePlaySection, .gameOverSection {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin: 20px auto;
+  max-width: 600px;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.inputField {
+  padding: 10px;
+  border: 2px solid #ff69b4;
+  border-radius: 5px;
+  margin: 10px;
+  font-size: 14px;
+  width: 100%;
+  max-width: 300px;
+  color: #c2185b;
+  
+}
+
+.ruleInput {
+  margin: 10px 0;
+}
+
+ 
+ 
+
+.closeButton {
+  background-color: #ff6347;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.closeButton:hover {
+  background-color: #d63384;
+}
+

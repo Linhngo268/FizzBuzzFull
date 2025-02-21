@@ -31,24 +31,35 @@ public class GameService : IGameService
         return (nextNumber, timeLeft);
     }
 
-    public async Task<IEnumerable<object>> GetAllGamesAsync()
-    {
-        var games = await _gameRepository.GetAllGamesAsync();
-        return games.Select(g => new 
-        {
-            g.Id,
-            g.GameName,
-            g.Author,
-            g.Timer,
-            Rules = g.Rules.Select(r => new { r.Divisor, r.Word }),
-            Range = new { Min = g.MinRange, Max = g.MaxRange }
-        });
-    }
+    // public async Task<IEnumerable<object>> GetAllGamesAsync()
+    // {
+    //     var games = await _gameRepository.GetAllGamesAsync();
+    //     return games.Select(g => new 
+    //     {
+    //         g.Id,
+    //         g.GameName,
+    //         g.Author,
+    //         g.Timer,
+    //         Rules = g.Rules.Select(r => new { r.Divisor, r.Word }),
+    //         Range = new { Min = g.MinRange, Max = g.MaxRange }
+    //     });
+    // }
+    public async Task<IEnumerable<GameDto>> GetAllGamesAsync()
+{
+    var games = await _gameRepository.GetAllGamesAsync();
+    return games.Select(g => g.ToDto());
+}
 
-    public async Task<Game> GetGameByNameAsync(string gameName)
-    {
-        return await _gameRepository.GetGameByNameAsync(gameName);
-    }
+
+    // public async Task<Game> GetGameByNameAsync(string gameName)
+    // {
+    //     return await _gameRepository.GetGameByNameAsync(gameName);
+    // }
+public async Task<GameDto> GetGameByNameAsync(string gameName)
+{
+    var game = await _gameRepository.GetGameByNameAsync(gameName);
+    return game?.ToDto();
+}
 
 
 
